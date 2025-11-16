@@ -1,17 +1,15 @@
-#!/usr/bin/env bash
-# Script to transfer a file to a server using scp
+#!/bin/bash
 
-# Check number of arguments
+# Check if we have at least 4 parameters
 if [ "$#" -lt 4 ]; then
-    echo "Usage: $0 PATH_TO_FILE IP USERNAME PATH_TO_SSH_KEY"
+    echo "Usage: 0-transfer_file PATH_TO_FILE IP USERNAME PATH_TO_SSH_KEY"
     exit 1
 fi
 
-# Assign parameters to variables
 FILE_PATH="$1"
 SERVER_IP="$2"
 USERNAME="$3"
 SSH_KEY="$4"
 
-# Transfer file to server home directory
+# Transfer the file to the user's home directory with strict host key checking disabled
 scp -o StrictHostKeyChecking=no -i "$SSH_KEY" "$FILE_PATH" "$USERNAME@$SERVER_IP:~/"
