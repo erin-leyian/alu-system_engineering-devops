@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# This script installs and configures HAProxy
+
+sudo apt-get update
+sudo apt-get install -y haproxy
+
+sudo sed -i 's/ENABLED=0/ENABLED=1/' /etc/default/haproxy
+
+sudo bash -c 'cat <<EOF > /etc/haproxy/haproxy.cfg
+global
+    log /dev/log local0
+    log /dev/log local1 notice
+    daemon
+
+defaults
+    log     global
+    mode    http
+    option  httplog
+    option  dontlognull
+    timeout connect 5000
+    timeout client  50000
+    timeout server  50000
+
+frontend http_front
+    bind *:80
+    default_backend web_servers
+
+backend web_servers
+    balance roundrobin
+    server web01 <WEB1-IP>:80 check
+    server web02 <WEB2-IP>:80 check
+EOF'
